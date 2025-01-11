@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage('Prepare Workspace') { // Optional stage for cleaning workspace
+            steps {
+                cleanWs()
+            }
+        }
         stage('Clone Repository') {
             steps {
                 git branch: 'main', 
