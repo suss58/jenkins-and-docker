@@ -11,7 +11,9 @@ function App() {
 
   return (
     <div className="App">
+
       <h1>Simple Form</h1>
+      <label>simple program of testing docker</label>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
