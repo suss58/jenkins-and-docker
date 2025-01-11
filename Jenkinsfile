@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Prepare Workspace') { // Optional stage for cleaning workspace
+        stage('Prepare Workspace') { 
             steps {
                 cleanWs() // Cleans up any previous workspace files
             }
@@ -23,8 +23,7 @@ pipeline {
                 echo 'Building Docker image...'
                 script {
                     try {
-                        // Building Docker image with a specific tag
-                        sh 'docker build -t jenkins-and-docker:latest .' // Replace `my-docker-image` with your image name
+                        sh 'docker build -t jenkins-and-docker:latest .' // Replace with your image name
                     } catch (Exception e) {
                         echo "Error building Docker image: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -38,8 +37,7 @@ pipeline {
                 echo 'Running Docker container...'
                 script {
                     try {
-                        // Running Docker container with specified port mapping and container name
-                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest' // Adjust ports and container name
+                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest' // Adjust ports
                     } catch (Exception e) {
                         echo "Error running Docker container: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -54,11 +52,8 @@ pipeline {
             echo 'Cleaning up Docker container...'
             script {
                 try {
-                    // Stopping and removing the Docker container
-                    sh '''
-                        docker stop my-container || true
-                        docker rm my-container || true
-                    '''
+                    sh 'docker stop my-container || true'
+                    sh 'docker rm my-container || true'
                 } catch (Exception e) {
                     echo "Error during cleanup: ${e}"
                 }
