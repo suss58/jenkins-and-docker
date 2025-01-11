@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Prepare Workspace') { // Optional stage for cleaning workspace
+        stage('Prepare Workspace') {
             steps {
                 cleanWs() // Cleans up any previous workspace files
             }
@@ -22,7 +22,7 @@ pipeline {
                     } catch (Exception e) {
                         echo "Error building Docker image: ${e}"
                         currentBuild.result = 'FAILURE'
-                        throw e // Re-throws the error to trigger failure
+                        throw e
                     }
                 }
             }
@@ -33,11 +33,11 @@ pipeline {
                 script {
                     try {
                         // Running Docker container with specified port mapping and container name
-                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest' // Adjust ports and container name
+                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest'
                     } catch (Exception e) {
                         echo "Error running Docker container: ${e}"
                         currentBuild.result = 'FAILURE'
-                        throw e // Re-throws the error to trigger failure
+                        throw e
                     }
                 }
             }
