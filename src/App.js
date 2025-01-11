@@ -18,7 +18,7 @@ function App() {
       <label>\n  program of testing docker and jenkins</label>
     
 
-      <label>\n simple program of testing docker and jenkins</label>
+      <label>\n docker and jenkins</label>
 
       <form onSubmit={handleSubmit}>
         <div>
