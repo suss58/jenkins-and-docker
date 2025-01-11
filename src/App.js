@@ -13,7 +13,7 @@ function App() {
     <div className="App">
 
       <h1>Simple Form</h1>
-      <label>simple program of testing docker</label>
+      <label>simple program of testing docker and jenkins</label>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
