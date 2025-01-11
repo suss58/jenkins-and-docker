@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Prepare Workspace') { // Optional stage for cleaning workspace
             steps {
-                cleanWs()
+                cleanWs() // Cleans up any previous workspace files
             }
         }
         stage('Clone Repository') {
@@ -21,23 +21,48 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t my-docker-image:latest .' // Replace `my-docker-image` with your image name
+                script {
+                    try {
+                        // Building Docker image with a specific tag
+                        sh 'docker build -t jenkins-and-docker:latest .' // Replace `my-docker-image` with your image name
+                    } catch (Exception e) {
+                        echo "Error building Docker image: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e // Re-throws the error to trigger failure
+                    }
+                }
             }
         }
         stage('Run Docker Container') {
             steps {
                 echo 'Running Docker container...'
-                sh 'docker run -d -p 3000:3000 --name my-container my-docker-image:latest' // Adjust ports and container name
+                script {
+                    try {
+                        // Running Docker container with specified port mapping and container name
+                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest' // Adjust ports and container name
+                    } catch (Exception e) {
+                        echo "Error running Docker container: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        throw e // Re-throws the error to trigger failure
+                    }
+                }
             }
         }
     }
     post {
         always {
             echo 'Cleaning up Docker container...'
-            sh '''
-                docker stop my-container || true
-                docker rm my-container || true
-            '''
+            script {
+                try {
+                    // Stopping and removing the Docker container
+                    sh '''
+                        docker stop my-container || true
+                        docker rm my-container || true
+                    '''
+                } catch (Exception e) {
+                    echo "Error during cleanup: ${e}"
+                }
+            }
         }
         success {
             echo 'Build and deployment completed successfully!'
