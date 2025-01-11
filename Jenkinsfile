@@ -1,24 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        REPO_URL = 'https://github.com/suss58/jenkins-and-docker.git'
+        BRANCH = 'main'
+        IMAGE_NAME = 'jenkins-and-docker'
+        CONTAINER_NAME = 'my-container'
+        PORT = '3000'
+    }
+
     stages {
         stage('Prepare Workspace') {
             steps {
-                cleanWs() // Cleans up any previous workspace files
+                echo 'Cleaning workspace...'
+                cleanWs() // Cleans up previous workspace files
             }
         }
 
         stage('Clone Repository') {
             steps {
-                git branch: 'main', 
-                    url: 'https://github.com/suss58/jenkins-and-docker.git'
+                echo 'Cloning repository...'
+                git branch: "${BRANCH}", url: "${REPO_URL}"
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
-                sh 'npm install' // Adjust based on your project (e.g., Maven, Gradle, etc.)
+                sh 'npm install'
             }
         }
 
@@ -27,12 +36,11 @@ pipeline {
                 echo 'Building Docker image...'
                 script {
                     try {
-                        // Build Docker image with a specific tag
-                        sh 'docker build -t jenkins-and-docker:latest .' // Replace with your image name if needed
+                        sh "docker build -t ${IMAGE_NAME}:latest ."
                     } catch (Exception e) {
                         echo "Error building Docker image: ${e}"
                         currentBuild.result = 'FAILURE'
-                        throw e // Re-throws the error to trigger failure
+                        throw e
                     }
                 }
             }
@@ -43,12 +51,17 @@ pipeline {
                 echo 'Running Docker container...'
                 script {
                     try {
-                        // Run Docker container with specified port mapping and container name
-                        sh 'docker run -d -p 3000:3000 --name my-container jenkins-and-docker:latest'
+                        // Stop any previous instance of the container
+                        sh '''
+                            docker stop ${CONTAINER_NAME} || true
+                            docker rm ${CONTAINER_NAME} || true
+                        '''
+                        // Start the new container
+                        sh "docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} ${IMAGE_NAME}:latest"
                     } catch (Exception e) {
                         echo "Error running Docker container: ${e}"
                         currentBuild.result = 'FAILURE'
-                        throw e // Re-throws the error to trigger failure
+                        throw e
                     }
                 }
             }
@@ -60,10 +73,9 @@ pipeline {
             echo 'Cleaning up Docker container...'
             script {
                 try {
-                    // Stop and remove the Docker container
                     sh '''
-                        docker stop my-container || true
-                        docker rm my-container || true
+                        docker stop ${CONTAINER_NAME} || true
+                        docker rm ${CONTAINER_NAME} || true
                     '''
                 } catch (Exception e) {
                     echo "Error during cleanup: ${e}"
