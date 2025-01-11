@@ -1,12 +1,12 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'react-form:latest'
+        DOCKER_IMAGE = 'jenkins-and-docker:latest'
     }
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/suss58/jenkins-and-docker'
+                git 'https://github.com/suss58/jenkins-and-docker.git'
             }
         }
         stage('Install Dependencies') {
