@@ -16,7 +16,7 @@ function App() {
       <label>simple program of testing docker and jenkins</label>
       <label>\n simple program of testing docker and jenkins</label>
       <label>\n simple program of testing docker and jenkins</label>
-      <label>\n simple program of testing docker and jenkins</label>
+    
 
       <label>\n simple program of testing docker and jenkins</label>
 
